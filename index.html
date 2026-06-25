@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>あけびのアプリ置き場</title>
+  <meta name="description" content="あけび（Naname0109）が個人開発した iOS アプリのポートフォリオ。暮らしと遊びをちょっと便利にするアプリを作っています。">
+  <meta property="og:title" content="あけびのアプリ置き場">
+  <meta property="og:description" content="暮らしと遊びをちょっと便利にする iOS アプリを個人開発しています。">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #0e1117;
+      color: #e6edf3;
+      font-family: 'Zen Kaku Gothic New', 'Inter', sans-serif;
+      min-height: 100vh;
+      letter-spacing: 0.02em;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 25%, rgba(88,166,255,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 75%, rgba(163,113,247,0.04) 0%, transparent 50%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      background: rgba(14,17,23,0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      padding: 0.7rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .header-left { display: flex; align-items: center; gap: 2rem; }
+    .site-title {
+      font-size: 1.15rem; font-weight: 700;
+      color: #e6edf3;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .site-title span { color: #58a6ff; }
+    .nav-menu { display: flex; gap: 1.4rem; }
+    .nav-menu a {
+      color: #8b949e; text-decoration: none;
+      font-size: 0.85rem; font-weight: 500;
+      font-family: 'Inter', 'Zen Kaku Gothic New', sans-serif;
+      transition: color 0.3s;
+    }
+    .nav-menu a:hover { color: #e6edf3; }
+    .social-links { display: flex; gap: 0.7rem; align-items: center; }
+    .social-links a {
+      display: flex; align-items: center;
+      color: #8b949e; text-decoration: none;
+      transition: color 0.3s;
+    }
+    .social-links a:hover { color: #e6edf3; }
+    .social-links svg { width: 18px; height: 18px; }
+
+    /* ── Layout ── */
+    .page-wrap {
+      position: relative; z-index: 1;
+      max-width: 880px;
+      margin: 90px auto 40px;
+      padding: 0 20px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding: 2rem 0 0.5rem;
+    }
+    .hero-title {
+      font-size: 2rem; font-weight: 700;
+      font-family: 'Space Grotesk', 'Zen Kaku Gothic New', sans-serif;
+      color: #e6edf3;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+    .hero-title span { color: #58a6ff; }
+    .hero-sub {
+      font-size: 0.95rem;
+      color: #8b949e;
+      margin-top: 0.6rem;
+      line-height: 1.8;
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+    .sec-label {
+      font-size: 0.7rem; font-weight: 600;
+      color: #58a6ff;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .sec-title {
+      font-size: 1.3rem; font-weight: 700;
+      color: #e6edf3;
+      font-family: 'Space Grotesk', 'Zen Kaku Gothic New', sans-serif;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.2rem;
+    }
+    .sec-divider {
+      width: 40px; height: 2px;
+      background: linear-gradient(90deg, #58a6ff, #a371f7);
+      border: none; border-radius: 1px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── About ── */
+    .about-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 1.6rem;
+      display: flex; flex-direction: column;
+      justify-content: center;
+    }
+    .about-text {
+      font-size: 0.9rem;
+      line-height: 2;
+      color: #8b949e;
+    }
+
+    /* ── Carousel ── */
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .carousel-slide {
+      min-width: 100%;
+      display: flex;
+      gap: 2rem;
+      padding: 2rem;
+      cursor: pointer;
+      align-items: center;
+    }
+    .slide-phone {
+      flex-shrink: 0;
+      width: 150px;
+    }
+    .slide-phone img {
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      border: 1.5px solid rgba(255,255,255,0.08);
+    }
+    .slide-body { flex: 1; min-width: 0; }
+    .slide-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      margin-bottom: 0.5rem;
+    }
+    .slide-name {
+      font-size: 1.2rem; font-weight: 700; color: #e6edf3;
+      margin-bottom: 0.15rem;
+    }
+    .slide-genre {
+      font-size: 0.65rem; font-weight: 600;
+      color: #58a6ff;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.7rem;
+    }
+    .slide-desc {
+      font-size: 0.85rem; color: #8b949e;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .slide-cta {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem; font-weight: 600;
+      color: #58a6ff;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      border: 1px solid rgba(88,166,255,0.3);
+      padding: 0.4rem 1rem; border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .carousel-slide:hover .slide-cta {
+      background: rgba(88,166,255,0.08);
+    }
+    .carousel-dots {
+      display: flex; justify-content: center;
+      gap: 6px;
+      padding: 0.8rem 0 1.2rem;
+    }
+    .carousel-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: none; padding: 0; cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .carousel-dot.active {
+      background: #58a6ff;
+      transform: scale(1.3);
+    }
+
+    /* ── App Grid ── */
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+    }
+
+    .app-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+      display: flex; flex-direction: column;
+      align-items: center;
+      text-decoration: none; color: inherit;
+      padding: 1.3rem 0.8rem 1.1rem;
+      text-align: center;
+    }
+    .app-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(88,166,255,0.2);
+    }
+
+    .card-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      margin-bottom: 0.6rem;
+    }
+    .card-name {
+      font-size: 0.88rem; font-weight: 700;
+      color: #e6edf3; line-height: 1.3;
+      margin-bottom: 0.3rem;
+    }
+    .card-sub {
+      font-size: 0.75rem; color: #8b949e;
+      line-height: 1.6;
+    }
+    .card-genre {
+      font-size: 0.65rem; font-weight: 600;
+      color: #58a6ff;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      letter-spacing: 0.04em;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Store Button ── */
+    .store-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent;
+      color: #58a6ff; font-size: 0.85rem;
+      padding: 0.55rem 1.2rem; border-radius: 8px;
+      font-weight: 600;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      border: 1px solid rgba(88,166,255,0.3);
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+      margin: 1.2rem auto 0; width: fit-content;
+    }
+    .store-btn:hover {
+      background: rgba(88,166,255,0.08);
+      border-color: rgba(88,166,255,0.5);
+    }
+    .store-btn svg { width: 14px; height: 14px; }
+
+    /* ── News List ── */
+    .news-list {
+      list-style: none; padding: 0; margin: 0;
+    }
+    .news-item {
+      display: flex; align-items: baseline; gap: 1rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .news-item:last-child { border-bottom: none; }
+    .news-date {
+      font-size: 0.75rem; color: #484f58;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      font-weight: 600; white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+    .news-body {
+      font-size: 0.82rem; color: #8b949e;
+      line-height: 1.6;
+    }
+    .news-body strong { color: #e6edf3; font-weight: 600; }
+
+    /* ── Contact ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+    }
+    .contact-item {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.9rem 1rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+      text-decoration: none; color: inherit;
+      transition: border-color 0.3s;
+    }
+    .contact-item:hover { border-color: rgba(88,166,255,0.25); }
+    .contact-icon {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(88,166,255,0.08);
+      border-radius: 9px;
+      color: #58a6ff;
+      flex-shrink: 0;
+    }
+    .contact-icon svg { width: 18px; height: 18px; }
+    .contact-meta-label {
+      font-size: 0.65rem; color: #484f58; font-weight: 600;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .contact-meta-value {
+      font-size: 0.82rem; color: #e6edf3;
+      font-family: 'Inter', 'Zen Kaku Gothic New', sans-serif;
+    }
+    .contact-intro {
+      font-size: 0.88rem; color: #8b949e;
+      margin-bottom: 1rem; line-height: 1.7;
+    }
+    .contact-desc {
+      font-size: 0.68rem; color: #484f58;
+      margin-top: 2px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 1.5rem;
+      font-size: 0.7rem; color: #30363d;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .app-grid { grid-template-columns: repeat(2, 1fr); }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .site-header {
+        flex-direction: column; align-items: flex-start;
+        padding: 0.6rem 1rem; gap: 0.3rem;
+      }
+      .header-left {
+        flex-direction: column; gap: 0.3rem; width: 100%;
+      }
+      .site-title { font-size: 1rem; }
+      .nav-menu { gap: 0.9rem; flex-wrap: wrap; }
+      .nav-menu a { font-size: 0.8rem; }
+      .page-wrap { margin-top: 120px; padding: 0 14px; }
+      .hero-title { font-size: 1.5rem; }
+      .app-grid { grid-template-columns: repeat(2, 1fr); }
+      .contact-grid { grid-template-columns: 1fr; }
+      .carousel-slide { flex-direction: column; gap: 1rem; padding: 1.2rem; }
+      .slide-phone { width: 120px; }
+      .slide-name { font-size: 1rem; }
+      .slide-desc { font-size: 0.8rem; }
+    }
+
+    /* ── Animation ── */
+    .fade-in {
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="header-left">
+    <a href="#" class="site-title">あけびの<span>アプリ置き場</span></a>
+    <nav class="nav-menu">
+      <a href="#apps">Apps</a>
+      <a href="#news">News</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+  <div class="social-links">
+    <a href="https://x.com/Bright_Black_1" target="_blank" rel="noopener noreferrer" aria-label="X">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <a href="https://github.com/naname0109" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- Main -->
+<div class="page-wrap" id="top">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1 class="hero-title">暮らしと遊びを<br>ちょっと<span>便利</span>にするアプリ</h1>
+    <p class="hero-sub">個人で iOS アプリを開発しています。<br>気になるアプリがあれば、ぜひ使ってみてください。</p>
+  </div>
+
+  <!-- About -->
+  <div class="about-card" style="margin-bottom: 2rem;">
+    <p class="about-text">
+      ひとりで企画・設計・実装・リリースまで。
+      「こういうの欲しかった」を自分で作って、App Store に並べています。
+      ライフスタイル系からゲームまで、ジャンル問わず気になったものを形に。
+    </p>
+  </div>
+
+  <!-- Pickup Carousel -->
+  <section class="section">
+    <div class="sec-label">Pickup</div>
+    <h2 class="sec-title">アプリ紹介</h2>
+    <hr class="sec-divider">
+    <div class="carousel" id="pickup-carousel">
+      <div class="carousel-track">
+
+        <div class="carousel-slide" data-href="https://apps.apple.com/jp/app/id6760540305">
+          <div class="slide-phone"><img src="images/screenshots/namikibun_01.png" alt="波きぶん"></div>
+          <div class="slide-body">
+            <img src="images/icons/namikibun.png" class="slide-icon" alt="">
+            <div class="slide-name">波きぶん</div>
+            <div class="slide-genre">Mood Journal</div>
+            <p class="slide-desc">毎日の気分を、数値ではなく「波のかたち」で記録するアプリ。<br>カレンダーに重なる波形グラフで、自分の調子のパターンが自然と見えてきます。<br>日記を書くほどじゃないけど、今日の気分はどこかに残しておきたい。そんな人に。</p>
+            <span class="slide-cta">App Store で見る</span>
+          </div>
+        </div>
+
+        <div class="carousel-slide" data-href="https://apps.apple.com/jp/app/id6764239126">
+          <div class="slide-phone"><img src="images/screenshots/harapekomap_01.png" alt="はらぺこマップ"></div>
+          <div class="slide-body">
+            <img src="images/icons/harapekomap.png" class="slide-icon" alt="">
+            <div class="slide-name">はらぺこマップ</div>
+            <div class="slide-genre">Food Map</div>
+            <p class="slide-desc">「あの店おいしかったけど、どこだっけ？」を解決。<br>行ったお店・行きたいお店を地図上にピン留めして、自分だけのタグで自由に整理。<br>Google Maps のブックマークより感覚的に、食べ歩きの記録が地図になっていきます。</p>
+            <span class="slide-cta">App Store で見る</span>
+          </div>
+        </div>
+
+        <div class="carousel-slide" data-href="https://apps.apple.com/jp/app/id6762136137">
+          <div class="slide-phone"><img src="images/screenshots/yarunavi_01.png" alt="やるナビ"></div>
+          <div class="slide-body">
+            <img src="images/icons/yarunavi.png" class="slide-icon" alt="">
+            <div class="slide-name">やるナビ</div>
+            <div class="slide-genre">AI Planner</div>
+            <p class="slide-desc">やることを入れるだけ。<br>「いつ」「どの順番で」やるかは AI が考えてくれます。<br>ただ並べるだけの ToDo リストじゃなく、時間の使い方まで提案してくれる。<br>「やることはあるのに動けない」を、段取りの力で解消します。</p>
+            <span class="slide-cta">App Store で見る</span>
+          </div>
+        </div>
+
+        <div class="carousel-slide" data-href="https://apps.apple.com/jp/app/id6779810493">
+          <div class="slide-phone"><img src="images/screenshots/pixellogic_01.png" alt="いきものピクロス"></div>
+          <div class="slide-body">
+            <img src="images/icons/pixellogic.png" class="slide-icon" alt="">
+            <div class="slide-name">いきものピクロス</div>
+            <div class="slide-genre">Pixel Puzzle</div>
+            <p class="slide-desc">数字をヒントにマスを塗ると、いきものが浮かび上がる。<br>解くたびにコレクション図鑑が埋まっていく、パズル×図鑑のいいとこ取り。<br>100問以上のステージを収録。<br>通勤中でも寝る前でも、1問だけのつもりが止まらなくなります。</p>
+            <span class="slide-cta">App Store で見る</span>
+          </div>
+        </div>
+
+        <div class="carousel-slide" data-href="https://apps.apple.com/jp/app/id6779938168">
+          <div class="slide-phone"><img src="images/screenshots/picodash_01.png" alt="ピコダッシュ"></div>
+          <div class="slide-body">
+            <img src="images/icons/picodash.png" class="slide-icon" alt="">
+            <div class="slide-name">ピコダッシュ</div>
+            <div class="slide-genre">Daily Runner</div>
+            <p class="slide-desc">毎日変わるコースを、世界中のプレイヤーと同じ条件で走る。<br>課金で強くなる要素はゼロ。<br>同じ地形、同じ障害物だから、差がつくのは純粋にプレイヤーの腕だけ。<br>今日のコース、何秒で走れる？</p>
+            <span class="slide-cta">App Store で見る</span>
+          </div>
+        </div>
+
+        <div class="carousel-slide" data-href="https://apps.apple.com/jp/app/id6778654479">
+          <div class="slide-phone"><img src="images/screenshots/faston_01.png" alt="ファストン"></div>
+          <div class="slide-body">
+            <img src="images/icons/faston.png" class="slide-icon" alt="">
+            <div class="slide-name">ファストン</div>
+            <div class="slide-genre">Fasting Timer</div>
+            <p class="slide-desc">ただ時間を計るだけのタイマーじゃない。<br>「いま脂肪燃焼が始まった」「オートファジーに突入した」など、<br>体の中で起きている変化をステージで可視化。<br>断食のモチベーションが続かない人ほど、効果を実感できるタイマーです。</p>
+            <span class="slide-cta">App Store で見る</span>
+          </div>
+        </div>
+
+        <div class="carousel-slide" data-href="https://apps.apple.com/jp/app/id6780518136">
+          <div class="slide-phone"><img src="images/screenshots/mizumaru_01.png" alt="みずまる"></div>
+          <div class="slide-body">
+            <img src="images/icons/mizumaru.png" class="slide-icon" alt="">
+            <div class="slide-name">みずまる</div>
+            <div class="slide-genre">Plant Care</div>
+            <p class="slide-desc">植物ごとに水やりの間隔を覚えてくれて、次のタイミングを通知でお知らせ。<br>「この子、前いつあげたっけ？」がなくなります。<br>登録は名前と周期だけ。<br>余計な機能がないから、ズボラさんほど続けられます。</p>
+            <span class="slide-cta">App Store で見る</span>
+          </div>
+        </div>
+
+        <div class="carousel-slide" data-href="https://apps.apple.com/jp/app/id6773306619">
+          <div class="slide-phone"><img src="images/screenshots/odekakecheck_01.png" alt="おでかけチェック"></div>
+          <div class="slide-body">
+            <img src="images/icons/odekakecheck.png" class="slide-icon" alt="">
+            <div class="slide-name">おでかけチェック</div>
+            <div class="slide-genre">Checklist</div>
+            <p class="slide-desc">通勤・旅行・買い物――シーンごとにチェックリストを作って、出発前にサッと確認。<br>「あ、鍵忘れた」「充電器…」あの玄関での焦りをゼロにします。<br>毎日使うものだから、とにかくシンプルに作りました。</p>
+            <span class="slide-cta">App Store で見る</span>
+          </div>
+        </div>
+
+        <div class="carousel-slide" data-href="https://apps.apple.com/jp/app/id6780020794">
+          <div class="slide-phone"><img src="images/screenshots/takojannote_01.png" alt="タコ勝ち麻雀録"></div>
+          <div class="slide-body">
+            <img src="images/icons/takojannote.png" class="slide-icon" alt="">
+            <div class="slide-name">タコ勝ち麻雀録</div>
+            <div class="slide-genre">Mahjong Tracker</div>
+            <p class="slide-desc">半荘ごとのスコア・順位・収支をサクッと記録。<br>「なんとなく勝ってる気がする」を数字で確認。<br>グラフで成績の推移が見えるから、自分の調子の波がわかります。<br>マスコットのタコまるが見守る麻雀ノート。</p>
+            <span class="slide-cta">App Store で見る</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="carousel-dots" id="carousel-dots"></div>
+    </div>
+  </section>
+
+  <!-- Apps -->
+  <section class="section" id="apps">
+    <div class="sec-label">Apps</div>
+    <h2 class="sec-title">つくったもの</h2>
+    <hr class="sec-divider">
+    <div class="app-grid">
+
+      <a href="https://apps.apple.com/jp/app/id6764239126" class="app-card fade-in" target="_blank" rel="noopener noreferrer">
+        <img src="images/icons/harapekomap.png" class="card-icon" alt="">
+        <div class="card-name">はらぺこマップ</div>
+        <div class="card-sub">お気に入りのお店を、自分だけの地図に残せる</div>
+        <div class="card-genre">Food Map</div>
+      </a>
+
+      <a href="https://apps.apple.com/jp/app/id6762136137" class="app-card fade-in" target="_blank" rel="noopener noreferrer">
+        <img src="images/icons/yarunavi.png" class="card-icon" alt="">
+        <div class="card-name">やるナビ</div>
+        <div class="card-sub">「次、何やろう？」AIが段取りしてくれる</div>
+        <div class="card-genre">AI Planner</div>
+      </a>
+
+      <a href="https://apps.apple.com/jp/app/id6779810493" class="app-card fade-in" target="_blank" rel="noopener noreferrer">
+        <img src="images/icons/pixellogic.png" class="card-icon" alt="">
+        <div class="card-name">いきものピクロス</div>
+        <div class="card-sub">ヒントは数字だけ。塗って現れるいきものたち</div>
+        <div class="card-genre">Pixel Puzzle</div>
+      </a>
+
+      <a href="https://apps.apple.com/jp/app/id6779938168" class="app-card fade-in" target="_blank" rel="noopener noreferrer">
+        <img src="images/icons/picodash.png" class="card-icon" alt="">
+        <div class="card-name">ピコダッシュ</div>
+        <div class="card-sub">今日のコース、何秒で走れる？</div>
+        <div class="card-genre">Daily Runner</div>
+      </a>
+
+      <a href="https://apps.apple.com/jp/app/id6778654479" class="app-card fade-in" target="_blank" rel="noopener noreferrer">
+        <img src="images/icons/faston.png" class="card-icon" alt="">
+        <div class="card-name">ファストン</div>
+        <div class="card-sub">いま体の中で何が起きてるか、見えるタイマー</div>
+        <div class="card-genre">Fasting Timer</div>
+      </a>
+
+      <a href="https://apps.apple.com/jp/app/id6780518136" class="app-card fade-in" target="_blank" rel="noopener noreferrer">
+        <img src="images/icons/mizumaru.png" class="card-icon" alt="">
+        <div class="card-name">みずまる</div>
+        <div class="card-sub">「次の水やり、いつだっけ？」がなくなる</div>
+        <div class="card-genre">Plant Care</div>
+      </a>
+
+      <a href="https://apps.apple.com/jp/app/id6773306619" class="app-card fade-in" target="_blank" rel="noopener noreferrer">
+        <img src="images/icons/odekakecheck.png" class="card-icon" alt="">
+        <div class="card-name">おでかけチェック</div>
+        <div class="card-sub">「あれ持った？」玄関で焦る、あの瞬間をゼロに</div>
+        <div class="card-genre">Checklist</div>
+      </a>
+
+      <a href="https://apps.apple.com/jp/app/id6780020794" class="app-card fade-in" target="_blank" rel="noopener noreferrer">
+        <img src="images/icons/takojannote.png" class="card-icon" alt="">
+        <div class="card-name">タコ勝ち麻雀録</div>
+        <div class="card-sub">半荘ごとの成績、ちゃんと残してる？</div>
+        <div class="card-genre">Mahjong Tracker</div>
+      </a>
+
+      <a href="https://apps.apple.com/jp/app/id6760540305" class="app-card fade-in" target="_blank" rel="noopener noreferrer">
+        <img src="images/icons/namikibun.png" class="card-icon" alt="">
+        <div class="card-name">波きぶん</div>
+        <div class="card-sub">今日の気分を、波のかたちで残す</div>
+        <div class="card-genre">Mood Journal</div>
+      </a>
+
+    </div>
+
+  </section>
+
+  <!-- News -->
+  <section class="section" id="news">
+    <div class="sec-label">News</div>
+    <h2 class="sec-title">お知らせ</h2>
+    <hr class="sec-divider">
+    <ul class="news-list">
+      <li class="news-item fade-in">
+        <time class="news-date">2026.06.24</time>
+        <span class="news-body">全アプリに強制アップデート機能を追加し、最新版を審査に提出しました</span>
+      </li>
+      <li class="news-item fade-in">
+        <time class="news-date">2026.06.17</time>
+        <span class="news-body"><strong>みずまる</strong> リリース</span>
+      </li>
+      <li class="news-item fade-in">
+        <time class="news-date">2026.06.16</time>
+        <span class="news-body"><strong>いきものピクロス</strong> リリース</span>
+      </li>
+      <li class="news-item fade-in">
+        <time class="news-date">2026.06.14</time>
+        <span class="news-body"><strong>ファストン</strong> / <strong>ピコダッシュ</strong> / <strong>タコ勝ち麻雀録</strong> リリース</span>
+      </li>
+      <li class="news-item fade-in">
+        <time class="news-date">2026.06.05</time>
+        <span class="news-body"><strong>おでかけチェック</strong> リリース</span>
+      </li>
+      <li class="news-item fade-in">
+        <time class="news-date">2026.05.30</time>
+        <span class="news-body"><strong>はらぺこマップ</strong> リリース</span>
+      </li>
+      <li class="news-item fade-in">
+        <time class="news-date">2026.04.10</time>
+        <span class="news-body"><strong>やるナビ</strong> リリース</span>
+      </li>
+      <li class="news-item fade-in">
+        <time class="news-date">2026.04.05</time>
+        <span class="news-body"><strong>波きぶん</strong> リリース</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Contact -->
+  <section class="section" id="contact">
+    <div class="sec-label">Contact</div>
+    <h2 class="sec-title">お問い合わせ</h2>
+    <hr class="sec-divider">
+    <p class="contact-intro">アプリに関するお問い合わせや、お仕事のご依頼はお気軽にどうぞ。</p>
+    <div class="contact-grid">
+      <a href="mailto:tubaki69@gmail.com" class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <div>
+          <div class="contact-meta-label">Email</div>
+          <div class="contact-meta-value">tubaki69@gmail.com</div>
+          <div class="contact-desc">お問い合わせ・お仕事のご依頼</div>
+        </div>
+      </a>
+      <a href="https://x.com/Bright_Black_1" class="contact-item" target="_blank" rel="noopener noreferrer">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </div>
+        <div>
+          <div class="contact-meta-label">X (Twitter)</div>
+          <div class="contact-meta-value">@Bright_Black_1</div>
+          <div class="contact-desc">開発の裏側や進捗を発信中</div>
+        </div>
+      </a>
+      <a href="https://github.com/naname0109" class="contact-item" target="_blank" rel="noopener noreferrer">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        </div>
+        <div>
+          <div class="contact-meta-label">GitHub</div>
+          <div class="contact-meta-value">naname0109</div>
+          <div class="contact-desc">ソースコード・法務ページ</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">&copy; 2025 Masahiro Akebi (Naname0109)</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Carousel
+  (() => {
+    const track = document.querySelector('.carousel-track');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dotsWrap = document.getElementById('carousel-dots');
+    let current = 0;
+    let timer;
+
+    slides.forEach((s, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+      dot.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(dot);
+
+      s.addEventListener('click', () => {
+        window.open(s.dataset.href, '_blank', 'noopener');
+      });
+    });
+
+    function goTo(i) {
+      current = i;
+      track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      dotsWrap.querySelectorAll('.carousel-dot').forEach((d, j) => {
+        d.classList.toggle('active', j === current);
+      });
+      resetTimer();
+    }
+
+    function next() { goTo((current + 1) % slides.length); }
+
+    function resetTimer() {
+      clearInterval(timer);
+      timer = setInterval(next, 6000);
+    }
+
+    resetTimer();
+  })();
+</script>
+
+</body>
+</html>
