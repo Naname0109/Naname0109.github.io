@@ -148,13 +148,16 @@
     .carousel-track {
       display: flex;
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: grab;
+      user-select: none;
     }
+    .carousel-track:active { cursor: grabbing; }
     .carousel-slide {
       min-width: 100%;
       display: flex;
       gap: 2rem;
       padding: 2rem;
-      cursor: pointer;
+      cursor: inherit;
       align-items: center;
     }
     .slide-phone {
@@ -365,16 +368,15 @@
     }
     @media (max-width: 640px) {
       .site-header {
-        flex-direction: column; align-items: flex-start;
-        padding: 0.6rem 1rem; gap: 0.3rem;
+        padding: 0.5rem 0.8rem;
       }
-      .header-left {
-        flex-direction: column; gap: 0.3rem; width: 100%;
-      }
-      .site-title { font-size: 1rem; }
-      .nav-menu { gap: 0.9rem; flex-wrap: wrap; }
-      .nav-menu a { font-size: 0.8rem; }
-      .page-wrap { margin-top: 120px; padding: 0 14px; }
+      .header-left { gap: 1rem; }
+      .site-title { font-size: 0.95rem; }
+      .nav-menu { gap: 0.8rem; }
+      .nav-menu a { font-size: 0.75rem; }
+      .social-links { gap: 0.5rem; }
+      .social-links svg { width: 15px; height: 15px; }
+      .page-wrap { margin-top: 70px; padding: 0 14px; }
       .hero-title { font-size: 1.5rem; }
       .app-grid { grid-template-columns: repeat(2, 1fr); }
       .contact-grid { grid-template-columns: 1fr; }
@@ -666,13 +668,13 @@
     <hr class="sec-divider">
     <p class="contact-intro">アプリに関するお問い合わせや、お仕事のご依頼はお気軽にどうぞ。</p>
     <div class="contact-grid">
-      <a href="mailto:tubaki69@gmail.com" class="contact-item">
+      <a href="mailto:brightblack7777@gmail.com" class="contact-item">
         <div class="contact-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         </div>
         <div>
           <div class="contact-meta-label">Email</div>
-          <div class="contact-meta-value">tubaki69@gmail.com</div>
+          <div class="contact-meta-value">brightblack7777@gmail.com</div>
           <div class="contact-desc">お問い合わせ・お仕事のご依頼</div>
         </div>
       </a>
@@ -726,7 +728,8 @@
       dot.addEventListener('click', () => goTo(i));
       dotsWrap.appendChild(dot);
 
-      s.addEventListener('click', () => {
+      s.addEventListener('click', (e) => {
+        if (moved) { e.preventDefault(); return; }
         window.open(s.dataset.href, '_blank', 'noopener');
       });
     });
@@ -741,11 +744,50 @@
     }
 
     function next() { goTo((current + 1) % slides.length); }
+    function prev() { goTo((current - 1 + slides.length) % slides.length); }
 
     function resetTimer() {
       clearInterval(timer);
       timer = setInterval(next, 6000);
     }
+
+    let startX = 0, startY = 0, dragging = false, moved = false;
+    const THRESHOLD = 40;
+
+    track.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      dragging = true; moved = false;
+    }, { passive: true });
+
+    track.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      if (Math.abs(e.touches[0].clientX - startX) > 10) moved = true;
+    }, { passive: true });
+
+    track.addEventListener('touchend', e => {
+      if (!dragging) return;
+      dragging = false;
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+        dx < 0 ? next() : prev();
+      }
+    });
+
+    track.addEventListener('mousedown', e => {
+      startX = e.clientX; dragging = true; moved = false;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', e => {
+      if (dragging && Math.abs(e.clientX - startX) > 10) moved = true;
+    });
+    document.addEventListener('mouseup', e => {
+      if (!dragging) return;
+      dragging = false;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > THRESHOLD) dx < 0 ? next() : prev();
+    });
 
     resetTimer();
   })();
